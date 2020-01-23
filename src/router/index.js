@@ -14,7 +14,13 @@ const routes = [
   },
   { path: '/home',
     name: 'home',
-    component: () => import('../views/home')
+    component: () => import('../views/home'),
+    children: [
+      {
+        path: '', // 二级路由路径不写 代表默认组件
+        component: () => import('../views/home/home')
+      }
+    ]
   }
 ]
 
