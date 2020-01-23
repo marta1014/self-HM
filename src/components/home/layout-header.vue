@@ -7,14 +7,14 @@
           </el-col>
           <el-col :span="6" class="right">
             <el-row type="flex" justify="end" align="middle">
-              <img src="../../assets/img/avatar.jpg" alt="">
-              <el-dropdown>
+              <img :src="userinfo.photo ? userinfo.photo :defaultPhoto" alt="">
+              <el-dropdown @command="clickmenu">
                 <!-- 此处span 为匿名插槽 为了显示名称内容 -->
-                <span>你的承诺</span>
+                <span>{{userinfo.name}}</span>
                 <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>个人信息</el-dropdown-item>
-                <el-dropdown-item>git地址</el-dropdown-item>
-                <el-dropdown-item>退出</el-dropdown-item>
+                <el-dropdown-item command="info">{{userinfo.intro}}</el-dropdown-item>
+                <el-dropdown-item command="email">{{userinfo.email}}</el-dropdown-item>
+                <el-dropdown-item command="exit">退出</el-dropdown-item>
   </el-dropdown-menu>
               </el-dropdown>
             </el-row>
@@ -25,7 +25,37 @@
 
 <script>
 export default {
-  name: 'layoutHeader'
+  name: 'layoutHeader',
+  data () {
+    return {
+      userinfo: {},
+      defaultPhoto: require('../../assets/img/avatar.jpg')// 引用图片地址给该变量
+    }
+  },
+  methods: {
+    clickmenu (command) { // 点击菜单项时触发的事件
+      if (command === 'info') {
+
+      } else if (command === 'email') {
+        window.location.href = 'https://baike.baidu.com/item/%E9%98%BF%E6%B6%B5/23563743?fr=aladdin'
+      } else {
+        localStorage.removeItem('user-token')
+        this.$router.push('/login')
+      }
+    }
+  },
+  created () {
+    const token = localStorage.getItem('user-token')
+    this.$axios({
+      url: '/user/profile',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).then(res => {
+      const { data } = res.data
+      this.userinfo = data
+    })
+  }
 }
 </script>
 
