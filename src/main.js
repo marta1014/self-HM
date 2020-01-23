@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import './permission' // 引用权限模块
 import ElementUI from 'element-ui'
 import component from './components'
 import 'element-ui/lib/theme-chalk/index.css'
