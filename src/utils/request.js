@@ -1,5 +1,7 @@
 // 封装axios请求
 import axios from 'axios'
+import router from '../router'
+import { Message } from 'element-ui'
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'// 设置常态值
 axios.interceptors.request.use(config => { // 请求拦截
   // config 请求配置选项 （默认url，method，params（URL参数，get参数，地址参数，query参数），
@@ -22,7 +24,32 @@ axios.interceptors.response.use(response => { // 响应拦截
   // layout-header.vue?31b9:50 Uncaught (in promise)
   // TypeError: Cannot read property 'data' of undefined
   return response || {}
-}, () => {
-// 失败
+}, error => {
+  console.log(error)
+  // 通过error里的config里的url地址+状态码判别对应业务需求
+  // 失败
+  let status = error.response.status
+  let message = ''
+  //   console.log(status)
+  switch (status) {
+    case 400 :
+      message = '请求参数错误'
+      break
+    case 507 :
+      message = '数据库异常'
+      break
+    case 401 :
+      // token过期失效 回到登陆页
+      // this.$router = router
+      window.localStorage.removeItem('user-token')// 删除过期token
+      router.push('/login')
+      break
+    case 403 :
+      message = '没有权限'
+      break
+    default:
+      break
+  }
+  Message({ type: 'warning', message })
 })
 export default axios

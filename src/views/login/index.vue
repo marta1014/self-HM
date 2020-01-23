@@ -35,7 +35,7 @@ export default {
     return {
       loginForm: {
         // 数据对象绑定
-        mobile: '13911111111',
+        mobile: '',
         code: '246810',
         check: true
       },
@@ -65,10 +65,6 @@ export default {
       this.$refs.myLogin.validate(ok => {
         // const user = this.loginForm
         if (ok) {
-          this.$message({
-            message: '登陆成功',
-            type: 'success'
-          })
           this.$axios({
             url: 'authorizations',
             method: 'post',
@@ -81,13 +77,7 @@ export default {
               localStorage.setItem('user-token', data.token) // 存至本地
               this.$router.push('/home') // 编程式导航
             })
-            .catch(() => {
-              // debugger
-              this.$message({
-                message: '登陆失败，请重新登录',
-                type: 'warning'
-              })
-            })
+            // 根据状态码统一处理提示消息
         }
       })
     }
