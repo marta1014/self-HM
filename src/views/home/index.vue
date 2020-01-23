@@ -20,13 +20,13 @@
 </template>
 
 <script>
-import asideLeft from '@/components/home/aside'
-import layoutHeader from '@/components/home/layout-header'
+// import asideLeft from '@/components/home/aside'
+// import layoutHeader from '@/components/home/layout-header'
 export default {
   name: 'homePage',
   components: {
-    asideLeft, // 侧栏组件
-    layoutHeader
+    // asideLeft, // 侧栏组件
+    // layoutHeader
   }
 }
 </script>
