@@ -14,5 +14,15 @@ axios.interceptors.request.use(config => { // 请求拦截
 }, () => {
 // 执行请求错误进入此函数
 })
-
+axios.interceptors.response.use(response => { // 响应拦截
+// 成功执行该代码
+//   console.log(response)
+  //   return response ? response : {}
+  // 有些情况response不存在 所以return一个不存在会报错 所以增设空对象 非空判断
+  // layout-header.vue?31b9:50 Uncaught (in promise)
+  // TypeError: Cannot read property 'data' of undefined
+  return response || {}
+}, () => {
+// 失败
+})
 export default axios
