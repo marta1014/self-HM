@@ -14,7 +14,10 @@
         <layoutHeader></layoutHeader>
       </el-header>
       <!-- 主区域 -->
-      <el-main>珠区域</el-main>
+      <el-main>
+      <router-view/>
+      <!-- 二级路由容器区域 -->
+      </el-main>
     </el-container>
   </el-container>
 </template>
