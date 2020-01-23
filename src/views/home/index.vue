@@ -11,6 +11,7 @@
     <el-container>
       <!-- 头部 -->
       <el-header>
+        <layoutHeader></layoutHeader>
       </el-header>
       <!-- 主区域 -->
       <el-main>珠区域</el-main>
@@ -20,10 +21,12 @@
 
 <script>
 import asideLeft from '@/components/home/aside'
+import layoutHeader from '@/components/home/layout-header'
 export default {
   name: 'homePage',
   components: {
-    asideLeft // 侧栏组件
+    asideLeft, // 侧栏组件
+    layoutHeader
   }
 }
 </script>
