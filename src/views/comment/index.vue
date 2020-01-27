@@ -25,6 +25,16 @@
 
       </el-table-column>
     </el-table>
+    <el-row type="flex" justify="center" align="middle" style="height:60px">
+      <el-pagination
+      background
+      layout="prev, pager, next"
+      @current-change="changeCurrent"
+      :current-page="pagination.currentPage"
+      :page-size="pagination.pagesize"
+      :total="pagination.total">
+    </el-pagination>
+    </el-row>
   </el-card>
 </template>
 
@@ -33,7 +43,12 @@ export default {
   name: 'comment',
   data () {
     return {
-      list: [] // 接收数据
+      list: [], // 接收数据
+      pagination: {// 存放分页数据
+        total: 0,
+        currentPage: 1,
+        pagesize: 10
+      }
     }
   },
   methods: {
@@ -42,12 +57,16 @@ export default {
       this.$axios({
         url: '/articles',
         params: {
-          response_type: 'comment'
+          response_type: 'comment',
+          page: this.pagination.currentPage,
+          per_page: this.pagination.pagesize
         }
-      }).then(res => {
+      }).then(res => { // 数据赋值
         const { data } = res.data
         this.list = data.results
-        console.log(this.list)
+        this.pagination.total = data.total_count
+        this.pagination.currentPage = data.page
+        this.pagination.pagesize = data.per_page
       })
     },
     fmBoolean (row, column, cellValue, index) { // 格式化布尔值方法
@@ -65,12 +84,13 @@ export default {
           // 经过JSON.bigint处理后是bignumber 转为字符串toString()
           data: { allow_comment: !row.comment_status }
         }).then(() => { // 重新拉取数据
-          // debugger
           this.getComments()
-        }).catch(() => {
-          // debugger
-        })
+        }).catch(() => {})
       })
+    },
+    changeCurrent (newpage) { // 页码改变 新页即当前页
+      this.pagination.currentPage = newpage
+      this.getComments()
     }
   },
   created () {
