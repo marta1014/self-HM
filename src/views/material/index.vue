@@ -23,6 +23,19 @@
     </div>
         </el-tab-pane>
     </el-tabs>
+    <!-- 公共分页 -->
+      <el-row type="flex" justify="center"
+      align="middle" style="height:60px">
+      <el-pagination
+      background
+      layout="prev, pager, next"
+      @current-change="changeCurrent"
+      :current-page="pagination.currentPage"
+      :page-size="pagination.pagesize"
+      :total="pagination.total"
+      >
+    </el-pagination>
+    </el-row>
 </el-card>
 </template>
 
@@ -31,22 +44,40 @@ export default {
   data () {
     return {
       activeName: 'all', // tab栏默认选中
-      list: []
+      list: [],
+      pagination: {
+        total: 0,
+        currentPage: 1,
+        pagesize: 8
+      }
     }
   },
   methods: {
     getMaterial () { // 获取素材
       this.$axios({
         url: '/user/images',
-        params: { collect: this.activeName === 'collect' }
+        params: {
+          collect: this.activeName === 'collect',
+          total_count: this.pagination.total,
+          page: this.pagination.currentPage,
+          per_page: this.pagination.pagesize
+        }
       }).then(res => {
         const { data } = res.data
         this.list = data.results
+        this.pagination.total = data.total_count
+        this.pagination.currentPage = data.page
+        this.pagination.pagesize = data.per_page
         // console.log(data)
       })
     },
     changeTab () {
       console.log(this.activeName)
+      this.getMaterial()
+    },
+    changeCurrent (newpage) {
+      this.pagination.currentPage = newpage
+      this.pagination.currentPage = 1// 切换页签必须显示第一页
       this.getMaterial()
     }
   },
