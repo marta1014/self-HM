@@ -19,7 +19,7 @@
         <template slot-scope="obj">
           <el-button type="text" size="small">修改</el-button>
         <!-- 根据状态决定关闭与否 -->
-        <el-button type="text" size="small">
+        <el-button type="text" size="small" @click="openAndClose">
           {{obj.row.comment_status ? '关闭' : '打开'}}评论</el-button>
         </template>
 
@@ -47,13 +47,26 @@ export default {
       }).then(res => {
         const { data } = res.data
         this.list = data.results
-        console.log(this.list)
+        // console.log(this.list)
       })
     },
-    fmBoolean (row, column, cellValue, index) {
-      // 格式化布尔值方法
+    fmBoolean (row, column, cellValue, index) { // 格式化布尔值方法
       // 当前行 当前列 当前单元格的值 索引
       return cellValue ? '正常' : '关闭'
+    },
+    openAndClose (row) {
+      let mes = row.comment_status ? '关闭' : '打开'
+      this.$confirm(`你是否确定${mes}评论？`).then(() => {
+        // 调用接口更改状态
+        this.$axios({
+          method: 'put',
+          url: '/comments/status',
+          params: { article_id: row.id },
+          data: { allow_comment: !row.comment_status }
+        }).then(res => { // 重新拉取数据
+          this.getComments()
+        })
+      })
     }
   },
   created () {
