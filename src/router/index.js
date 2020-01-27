@@ -19,6 +19,11 @@ const routes = [
       {
         path: '', // 二级路由路径不写 代表默认组件
         component: () => import('../views/home/home')
+      },
+      {
+        // path: '/home/comment', // 完整路径写法
+        path: 'comment', // 路径简单写法
+        component: () => import('../views/comment')
       }
     ]
   }
