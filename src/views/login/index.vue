@@ -35,7 +35,7 @@ export default {
     return {
       loginForm: {
         // 数据对象绑定
-        mobile: '',
+        mobile: '13911111111',
         code: '246810',
         check: true
       },

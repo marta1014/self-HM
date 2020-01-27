@@ -19,7 +19,7 @@
         <template slot-scope="obj">
           <el-button type="text" size="small">修改</el-button>
         <!-- 根据状态决定关闭与否 -->
-        <el-button type="text" size="small" @click="openAndClose">
+        <el-button type="text" size="small" @click="openAndClose(obj.row)">
           {{obj.row.comment_status ? '关闭' : '打开'}}评论</el-button>
         </template>
 
@@ -47,7 +47,7 @@ export default {
       }).then(res => {
         const { data } = res.data
         this.list = data.results
-        // console.log(this.list)
+        console.log(this.list)
       })
     },
     fmBoolean (row, column, cellValue, index) { // 格式化布尔值方法
@@ -60,11 +60,15 @@ export default {
         // 调用接口更改状态
         this.$axios({
           method: 'put',
-          url: '/comments/status',
-          params: { article_id: row.id },
+          url: 'comments/status',
+          params: { article_id: row.id.toString() },
+          // 经过JSON.bigint处理后是bignumber 转为字符串toString()
           data: { allow_comment: !row.comment_status }
-        }).then(res => { // 重新拉取数据
+        }).then(() => { // 重新拉取数据
+          // debugger
           this.getComments()
+        }).catch(() => {
+          // debugger
         })
       })
     }

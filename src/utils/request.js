@@ -2,20 +2,32 @@
 import axios from 'axios'
 import router from '../router'
 import { Message } from 'element-ui'
+import JSONBig from 'json-bigint'// 处理js大数字失真问题
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'// 设置常态值
 axios.interceptors.request.use(config => { // 请求拦截
-  // config 请求配置选项 （默认url，method，params（URL参数，get参数，地址参数，query参数），
-  // headers，data，baseURl，data
-  // transformRequest：允许发请求之前修改数据（只能用在put，post，patch）
-  // 后面数组中的函数必须返回一个字符串，ArrayBuffer or stream）
+  /**
+   * config 请求配置选项 （默认url，method，params（URL参数，get参数，地址参数，query参数
+   * headers，data，baseURl，data
+   * transformRequest：允许发请求之前修改数据（只能用在put，post，patch）
+   * 后面数组中的函数必须返回一个字符串，ArrayBuffer or stream）
+   */
   // transformResponse 在传递给then/catch之前修改响应数据。。。。
-// 请求前拦截 统一注入token
+  // 请求前拦截 统一注入token
   let token = window.localStorage.getItem('user-token')
   config.headers.Authorization = `Bearer ${token}`
   return config
 }, () => {
 // 执行请求错误进入此函数
 })
+
+// 原来axios会默认自动处理数据JSON.parse() 现在需要在转换之前(到达响应之前)进行处理
+axios.defaults.transformResponse = [function (data) {
+  // console.log(JSONBig.parse(data))
+  // console.log(JSON.parse(data))
+  return JSONBig.parse(data)
+  // return JSON.parse(data)
+}]
+
 axios.interceptors.response.use(response => { // 响应拦截
 // 成功执行该代码
 //   console.log(response)
@@ -51,5 +63,7 @@ axios.interceptors.response.use(response => { // 响应拦截
       break
   }
   Message({ type: 'warning', message })
+  // 错误函数执行如果不进行任何操作还是进到promise.then中
+  return Promise.reject(error)// 只要reject就会进到catch 就可以在catch中接收错误
 })
 export default axios
