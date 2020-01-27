@@ -1,5 +1,6 @@
 <template>
-  <el-card>
+  <el-card
+    v-loading="loading">
     <breadCrumb slot="header">
       <template slot="title">评论管理</template>
     </breadCrumb>
@@ -48,12 +49,14 @@ export default {
         total: 0,
         currentPage: 1,
         pagesize: 10
-      }
+      },
+      loading: false
     }
   },
   methods: {
     getComments () {
       // 获取评论
+      this.loading = true
       this.$axios({
         url: '/articles',
         params: {
@@ -62,6 +65,7 @@ export default {
           per_page: this.pagination.pagesize
         }
       }).then(res => { // 数据赋值
+        this.loading = false
         const { data } = res.data
         this.list = data.results
         this.pagination.total = data.total_count
