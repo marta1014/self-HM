@@ -27,15 +27,15 @@
       </el-form-item>
     </el-form>
     <el-row class="title" type="flex" align="middle">
-        <span>共找到1000条内容</span>
+        <span>共找到{{pagination.total}}条内容</span>
     </el-row>
-    <div class="articleList">
+    <div class="articleList" v-for="item of list" :key="item.id.toString()">
         <div class="left">
-            <img src="../../assets/img/avatar.jpg" alt="">
+            <img :src="item.cover.images.length ? item.cover.images[0] :defaultImg" alt="">
             <div class="info">
-                <span>123</span>
-                <el-tag>1234</el-tag>
-                <span class="date">2345:1234:3</span>
+                <span>{{item.title}}</span>
+                <el-tag :type="item.status | aboutType">{{item.status | aboutStatus}}</el-tag>
+                <span class="date">{{item.pubdate}}</span>
             </div>
         </div>
         <div class="right">
@@ -56,7 +56,14 @@ export default {
         channels_id: null, // 默认不选任何分类
         dateRange: []
       },
-      channels: []
+      channels: [],
+      list: [],
+      pagination: {
+        total: 0,
+        currentPage: 1,
+        pagesize: 10
+      },
+      defaultImg: require('../../assets/img/avatar.jpg')
     }
   },
   methods: {
@@ -68,10 +75,49 @@ export default {
         this.channels = data.channels
         // console.log(res, data)
       })
+    },
+    getArticles () {
+      this.$axios({
+        url: '/articles'
+      }).then(res => {
+        const { data } = res.data
+        this.list = data.results
+        this.pagination.total = data.total_count
+        // console.log(this.list)
+      })
+    }
+  },
+  filters: {
+    aboutStatus (value) {
+      // 利用过滤器处理请求回数据显示问题
+      switch (value) {
+        case 0 :
+          return '草稿'
+        case 1 :
+          return '待审核'
+        case 2 :
+          return '已发表'
+        case 3 :
+          return '审核失败'
+      }
+    },
+    aboutType (value) {
+      // 利用过滤器处理请求回数据显示问题
+      switch (value) {
+        case 0 :
+          return 'warning'
+        case 1 :
+          return 'info'
+        case 2 :
+          return ''
+        case 3 :
+          return 'danger'
+      }
     }
   },
   created () {
     this.getChannels()
+    this.getArticles()
   }
 }
 </script>
