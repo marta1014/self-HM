@@ -45,6 +45,17 @@
             <span @click="delMaterial(item.id)"><i class="el-icon-delete"></i>删除</span>
         </div>
     </div>
+    <el-row type="flex" justify="center" class="pagination" align="middle">
+      <el-pagination
+      background
+      layout="prev,pager,next"
+      :current-page="pagination.currentPage"
+      :page-size="pagination.pagesize"
+      @current-change="changeCurrent"
+      :total="pagination.total"
+      >
+      </el-pagination>
+    </el-row>
   </el-card>
 </template>
 
@@ -87,19 +98,14 @@ export default {
         const { data } = res.data
         this.list = data.results
         this.pagination.total = data.total_count
-        // console.log(this.list)
+        this.pagination.currentPage = data.page
+        this.pagination.pagesize = data.per_page
+        // console.log(data)
       })
     },
     changeCondition () {
-      // 利用element组件的change事件实现条件筛选
-      let params = {
-        status: this.search.status === 5 ? null : this.search.status,
-        // 5是自定义的 接口没有 所以进行处理 后端要求全部是传null
-        channel_id: this.search.channel_id,
-        begin_pubdate: this.search.dateRange.length ? this.search.dateRange[0] : null,
-        end_pubdate: this.search.dateRange.length > 1 ? this.search.dateRange[1] : null
-      }
-      this.getArticles(params)
+      this.pagination.currentPage = 1
+      this.getCondition()
     },
     delMaterial (id) {
       // 接口设置只能删除草稿
@@ -115,6 +121,22 @@ export default {
           this.getArticles()
         })
       })
+    },
+    changeCurrent (newpage) {
+      this.pagination.currentPage = newpage
+      this.getCondition()
+    },
+    getCondition () {
+      let params = {
+        page: this.pagination.currentPage,
+        per_page: this.pagination.pagesize,
+        status: this.search.status === 5 ? null : this.search.status,
+        // 5是自定义的 接口没有 所以进行处理 后端要求全部是传null
+        channel_id: this.search.channel_id,
+        begin_pubdate: this.search.dateRange.length ? this.search.dateRange[0] : null,
+        end_pubdate: this.search.dateRange.length > 1 ? this.search.dateRange[1] : null
+      }
+      this.getArticles(params)
     }
   },
   filters: {
@@ -147,7 +169,7 @@ export default {
   },
   created () {
     this.getChannels()
-    this.getArticles()
+    this.getArticles({ page: 1, per_page: 10 })
   },
   watch: {
     search: {
@@ -204,6 +226,9 @@ export default {
                 cursor: pointer;
             }
         }
+    }
+    .pagination{
+      height: 60px;
     }
 }
 </style>
