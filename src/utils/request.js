@@ -24,7 +24,7 @@ axios.interceptors.request.use(config => { // 请求拦截
 axios.defaults.transformResponse = [function (data) {
   // console.log(JSONBig.parse(data))
   // console.log(JSON.parse(data))
-  return JSONBig.parse(data)
+  return data ? JSONBig.parse(data) : {} // 改造 => data存在则处理 否则给个空对象
   // return JSON.parse(data)
 }]
 

@@ -21,7 +21,7 @@
             <i class="el-icon-star-on"
             @click="choice(item)"
             :style="{color:item.is_collected ? 'red' : '#000'}"></i>
-            <i class="el-icon-delete-solid"></i>
+            <i class="el-icon-delete-solid" @click="delItem(item.id)"></i>
         </el-row>
     </el-card>
     </div>
@@ -117,6 +117,19 @@ export default {
         }
       }).then(res => {
         this.getMaterial()
+      })
+    },
+    delItem (id) {
+      // 执行此方法时报错 request.js 在处理大数字时 那时data是空串
+      // 处理空串报错 Cannot read property 'status' of undefined
+      // 改造requst.js进行非空判断
+      this.$confirm('确定删除？').then(() => {
+        this.$axios({
+          method: 'delete',
+          url: `/user/images/${id}`
+        }).then(() => {
+          this.getMaterial()
+        })
       })
     }
   },
