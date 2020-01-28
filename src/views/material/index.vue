@@ -85,11 +85,11 @@ export default {
     },
     changeTab () {
       // console.log(this.activeName)
+      this.pagination.currentPage = 1// 切换页签必须显示第一页
       this.getMaterial()
     },
     changeCurrent (newpage) {
       this.pagination.currentPage = newpage
-      this.pagination.currentPage = 1// 切换页签必须显示第一页
       this.getMaterial()
     },
     uploadImg (params) {
