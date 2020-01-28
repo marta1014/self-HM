@@ -17,7 +17,10 @@
         <el-card v-for="(item,index) of list" :key="index">
         <img :src="item.url" alt="">
         <el-row class="oprate">
-            <i class="el-icon-star-on"></i>
+<!-- 是否被收藏 接口要求is_collected = true/false 收藏/否-->
+            <i class="el-icon-star-on"
+            @click="choice(item)"
+            :style="{color:item.is_collected ? 'red' : '#000'}"></i>
             <i class="el-icon-delete-solid"></i>
         </el-row>
     </el-card>
@@ -103,6 +106,18 @@ export default {
         this.pagination.currentPage = 1// 回第一页
         this.getMaterial()
       })
+    },
+    choice (item) { // 收藏
+      // item.is_collected ? '取消收藏' : '收藏'
+      this.$axios({
+        method: 'put',
+        url: `/user/images/${item.id}`,
+        data: {
+          collect: !item.is_collected// 取反 收藏就取消
+        }
+      }).then(res => {
+        this.getMaterial()
+      })
     }
   },
   created () {
@@ -138,6 +153,9 @@ export default {
         display: flex;
         background-color: #f6f6f6;
         justify-content: space-around;
+        i{
+          cursor: pointer;
+        }
     }
 }
 }
