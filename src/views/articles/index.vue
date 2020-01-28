@@ -42,7 +42,7 @@
         </div>
         <div class="right">
             <span><i class="el-icon-edit"></i>修改</span>
-            <span><i class="el-icon-delete"></i>删除</span>
+            <span @click="delMaterial(item.id)"><i class="el-icon-delete"></i>删除</span>
         </div>
     </div>
   </el-card>
@@ -100,6 +100,21 @@ export default {
         end_pubdate: this.search.dateRange.length > 1 ? this.search.dateRange[1] : null
       }
       this.getArticles(params)
+    },
+    delMaterial (id) {
+      // 接口设置只能删除草稿
+      this.$confirm('确认删除？').then(() => {
+        this.$axios({
+          method: 'delete',
+          url: `/articles/${id.toString()}`
+        }).then(res => {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          this.getArticles()
+        })
+      })
     }
   },
   filters: {
