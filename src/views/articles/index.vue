@@ -5,7 +5,7 @@
     </breadCrumb>
     <el-form>
       <el-form-item label="文章状态：">
-          <el-radio-group v-model="search.status">
+          <el-radio-group v-model="search.status" @change="changeCondition">
               <el-radio :label="5">全部</el-radio>
               <el-radio :label="0">草稿</el-radio>
               <el-radio :label="1">待审核</el-radio>
@@ -14,7 +14,9 @@
           </el-radio-group>
       </el-form-item>
       <el-form-item label="频道列表：">
-          <el-select placeholder="请选择频道" v-model="search.channels_id">
+          <el-select placeholder="请选择频道"
+          @change="changeCondition"
+          v-model="search.channel_id">
               <el-option v-for="item of channels"
               :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
@@ -23,6 +25,8 @@
           <el-date-picker
           type="daterange"
           v-model="search.dateRange"
+          value-format="yyyy-MM-dd"
+          @change="changeCondition"
           ></el-date-picker>
       </el-form-item>
     </el-form>
@@ -53,7 +57,7 @@ export default {
     return {
       search: {
         status: 5,
-        channels_id: null, // 默认不选任何分类
+        channel_id: null, // 默认不选任何分类
         dateRange: []
       },
       channels: [],
@@ -76,15 +80,28 @@ export default {
         // console.log(res, data)
       })
     },
-    getArticles () {
+    getArticles (params) {
+      // 改造方法实现复用 第一次params没传 => undefined
       this.$axios({
-        url: '/articles'
+        url: '/articles',
+        params
       }).then(res => {
         const { data } = res.data
         this.list = data.results
         this.pagination.total = data.total_count
         // console.log(this.list)
       })
+    },
+    changeCondition () {
+      // 利用element组件的change事件实现条件筛选
+      let params = {
+        status: this.search.status === 5 ? null : this.search.status,
+        // 5是自定义的 接口没有 所以进行处理 后端要求全部是传null
+        channel_id: this.search.channel_id,
+        begin_pubdate: this.search.dateRange.length ? this.search.dateRange[0] : null,
+        end_pubdate: this.search.dateRange.length > 1 ? this.search.dateRange[1] : null
+      }
+      this.getArticles(params)
     }
   },
   filters: {
