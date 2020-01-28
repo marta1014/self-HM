@@ -5,7 +5,7 @@
     </breadCrumb>
     <el-form>
       <el-form-item label="文章状态：">
-          <el-radio-group v-model="search.status" @change="changeCondition">
+          <el-radio-group v-model="search.status">
               <el-radio :label="5">全部</el-radio>
               <el-radio :label="0">草稿</el-radio>
               <el-radio :label="1">待审核</el-radio>
@@ -15,7 +15,6 @@
       </el-form-item>
       <el-form-item label="频道列表：">
           <el-select placeholder="请选择频道"
-          @change="changeCondition"
           v-model="search.channel_id">
               <el-option v-for="item of channels"
               :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -26,7 +25,6 @@
           type="daterange"
           v-model="search.dateRange"
           value-format="yyyy-MM-dd"
-          @change="changeCondition"
           ></el-date-picker>
       </el-form-item>
     </el-form>
@@ -135,6 +133,14 @@ export default {
   created () {
     this.getChannels()
     this.getArticles()
+  },
+  watch: {
+    search: {
+      handler: function () { // handler固定写法
+        this.changeCondition()
+      },
+      deep: true// 深度监听
+    }
   }
 }
 </script>
