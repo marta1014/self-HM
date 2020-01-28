@@ -1,8 +1,16 @@
 <template>
-<el-card class="material">
+<el-card class="material" v-loading="loading">
     <breadCrumb slot="header">
     <template slot="title">素材管理</template>
     </breadCrumb>
+    <el-row type="flex" justify="end">
+      <el-upload action=""
+      :show-file-list="false"
+      :http-request="uploadImg">
+<!--ele-ui属性 http-request 覆盖默认的上传行为 可自定义上传实现 -->
+      <el-button type="primary" size="small">上传图片</el-button>
+    </el-upload>
+    </el-row>
     <el-tabs v-model="activeName" @tab-click="changeTab">
         <el-tab-pane label="全部" name="all">
         <div class="item">
@@ -49,7 +57,8 @@ export default {
         total: 0,
         currentPage: 1,
         pagesize: 8
-      }
+      },
+      loading: false
     }
   },
   methods: {
@@ -72,13 +81,28 @@ export default {
       })
     },
     changeTab () {
-      console.log(this.activeName)
+      // console.log(this.activeName)
       this.getMaterial()
     },
     changeCurrent (newpage) {
       this.pagination.currentPage = newpage
       this.pagination.currentPage = 1// 切换页签必须显示第一页
       this.getMaterial()
+    },
+    uploadImg (params) {
+      this.loading = true
+      let data = new FormData()
+      data.append('image', params.file)// 文件加入到参数中
+      this.$axios({
+        method: 'post',
+        url: '/user/images',
+        data
+      }).then(res => {
+        console.log(res)
+        this.loading = false
+        this.pagination.currentPage = 1// 回第一页
+        this.getMaterial()
+      })
     }
   },
   created () {
