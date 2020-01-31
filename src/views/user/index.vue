@@ -6,23 +6,24 @@
          </breadCrumb>
          <el-form label-width="100px">
              <el-form-item label="用户名">
-                 <el-input></el-input>
+                 <el-input v-model="formData.name"></el-input>
              </el-form-item>
               <el-form-item label="简介">
-                 <el-input type="textarea" rows="3" :autosize="{maxHeight:100,minHeight:40}"></el-input>
+                 <el-input v-model="formData.intro"
+                 ></el-input>
              </el-form-item>
               <el-form-item label="邮箱">
-                 <el-input></el-input>
+                 <el-input v-model="formData.email"></el-input>
              </el-form-item>
               <el-form-item label="手机号">
-                 <el-input disabled></el-input>
+                 <el-input disabled v-model="formData.mobile"></el-input>
              </el-form-item>
               <el-form-item>
                  <el-button type="primary">保存信息</el-button>
              </el-form-item>
          </el-form>
          <el-upload action="" :show-file-list="false" class="upload">
-             <img src="../../assets/img/IMG_0277.jpg" alt="">
+             <img :src="formData.photo ? formData.photo : defaultImg" alt="">
          </el-upload>
  </el-card>
 </template>
@@ -31,8 +32,28 @@
 export default {
   data () {
     return {
-    //   defaultImg: require('../../assets/img/avatar.jpg')
+      defaultImg: require('../../assets/img/IMG_0277.jpg'),
+      formData: {
+        name: '',
+        intro: '',
+        photo: '',
+        email: '',
+        mobile: ''
+      }
     }
+  },
+  methods: {
+    getuser () {
+      this.$axios({
+        url: '/user/profile'
+      }).then(res => {
+        const { data } = res.data
+        this.formData = data
+      })
+    }
+  },
+  created () {
+    this.getuser()
   }
 
 }
@@ -51,7 +72,7 @@ export default {
 .upload{
     position: absolute;
     right: 100px;
-    top: 280px;
+    top: 180px;
         img{
         width: 200px;
         height: 200px;
