@@ -10,9 +10,9 @@
         <el-input v-model="formData.title"></el-input>
       </el-form-item>
       <el-form-item label="内容" prop="content">
-        <el-input type="textarea" rows="10" v-model="formData.content"></el-input>
+        <quillEditor v-model="formData.content" class="quillEditor"></quillEditor>
       </el-form-item>
-      <el-form-item label="封面" prop="cover">
+      <el-form-item label="封面" prop="cover" class="radio-group">
         <el-radio-group v-model="formData.cover.type">
           <el-radio :label="1">单图</el-radio>
           <el-radio :label="2">三图</el-radio>
@@ -132,6 +132,12 @@ export default {
     margin-left: 50px;
     .el-input {
       width: 60%;
+    }
+    .quillEditor{
+      height: 300px;
+    }
+    .radio-group{
+      margin-top: 130px;
     }
   }
 }
