@@ -84,13 +84,43 @@ export default {
           })
         }
       })
+    },
+    getArticleId (id) {
+      this.$axios({
+        url: `/articles/${id}`
+      }).then(res => {
+        let { data } = res.data
+        this.formData = data
+        console.log(data)
+      })
     }
   },
   created () {
     this.getChannels()
+    // 一进入修改页面 获取id
+    let { id } = this.$route.params
+    id && this.getArticleId(id)// id存在才调用此方法
   },
   filters: {},
-  watch: {}
+  watch: {
+    $router: function (to, from) {
+      // 处理两个组件对应同一个地址 跳转时组件不销毁 数据没重置的问题
+      if (to.params.id) {
+        // 修改
+      } else {
+        // 发布
+        this.formData = {// 初始值
+          title: '',
+          content: '',
+          cover: {
+            type: 0,
+            images: []
+          },
+          channel_id: null
+        }
+      }
+    }
+  }
 }
 </script>
 

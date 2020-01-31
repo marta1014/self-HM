@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="right">
-            <span><i class="el-icon-edit"></i>修改</span>
+            <span @click="editMaterial(item.id)"><i class="el-icon-edit"></i>修改</span>
             <span @click="delMaterial(item.id)"><i class="el-icon-delete"></i>删除</span>
         </div>
     </div>
@@ -137,6 +137,9 @@ export default {
         end_pubdate: this.search.dateRange.length > 1 ? this.search.dateRange[1] : null
       }
       this.getArticles(params)
+    },
+    editMaterial (id) {
+      this.$router.push(`/home/publish/${id.toString()}`)
     }
   },
   filters: {
