@@ -27,8 +27,8 @@
         </el-select>
       </el-form-item>
       <el-form-item label>
-        <el-button type="primary" @click="publishArticle">发表</el-button>
-        <el-button  @click="publishArticle">存入草稿</el-button>
+        <el-button type="primary" @click="publishArticle(false)">发表</el-button>
+        <el-button  @click="publishArticle(true)">存入草稿</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -66,12 +66,24 @@ export default {
         this.channels = data.channels
       })
     },
-    publishArticle () {
-    //   this.$refs.articleForm.validate(isOk => {
-    //     if (isOk) {
-
-    //     }
-    //   })
+    publishArticle (Boolean) {
+      // 触发手动校验规则 通过 => 请求
+      this.$refs.articleForm.validate(isOk => {
+        if (isOk) {
+          this.$axios({
+            method: 'post',
+            url: '/articles',
+            params: { draft: Boolean },
+            data: this.formData
+          }).then(res => {
+            this.$message({
+              type: 'success',
+              message: '保存成功'
+            })
+            this.$router.push('/home/article')
+          })
+        }
+      })
     }
   },
   created () {
