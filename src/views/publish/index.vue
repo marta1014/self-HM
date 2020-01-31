@@ -15,10 +15,10 @@
       <el-form-item label="封面" prop="cover" class="radio-group">
         <el-radio-group v-model="formData.cover.type">
           <el-radio :label="1">单图</el-radio>
-          <el-radio :label="2">三图</el-radio>
+          <el-radio :label="3">三图</el-radio>
           <el-radio :label="0">无图</el-radio>
           <el-radio :label="-1">自动</el-radio>
-        </el-radio-group>
+        </el-radio-group>{{formData.cover}}
       </el-form-item>
       <el-form-item label="频道" prop="channel_id">
         <el-select placeholder="请选择频道" v-model="formData.channel_id">
@@ -120,6 +120,15 @@ export default {
           },
           channel_id: null
         }
+      }
+    },
+    'formData.cover.type': function () {
+      if (this.formData.cover.type === 0 || this.formData.cover.type === -1) {
+        this.formData.cover.images = []
+      } else if (this.formData.cover.type === 1) {
+        this.formData.cover.images = ['']// 单图给空串占位
+      } else if (this.formData.cover.type === 3) {
+        this.formData.cover.images = ['', '', '']// 三图
       }
     }
   }
