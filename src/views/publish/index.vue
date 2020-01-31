@@ -70,9 +70,11 @@ export default {
       // 触发手动校验规则 通过 => 请求
       this.$refs.articleForm.validate(isOk => {
         if (isOk) {
+          // 判断发布/修改
+          let { id } = this.$route.params
           this.$axios({
-            method: 'post',
-            url: '/articles',
+            url: id ? `/articles/${id}` : '/articles',
+            method: id ? 'put' : 'post',
             params: { draft: Boolean },
             data: this.formData
           }).then(res => {
@@ -97,7 +99,7 @@ export default {
   },
   created () {
     this.getChannels()
-    // 一进入修改页面 获取id
+    // 一进入修改页面 获取动态路由参数id
     let { id } = this.$route.params
     id && this.getArticleId(id)// id存在才调用此方法
   },
