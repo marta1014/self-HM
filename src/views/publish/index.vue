@@ -21,7 +21,7 @@
           <el-radio :label="-1">自动</el-radio>
         </el-radio-group>
       </el-form-item>
-      <cover-image :list="formData.cover.images"></cover-image>
+      <cover-image :list="formData.cover.images" @selectimg1="receiveImg"></cover-image>
       <el-form-item label="频道" prop="channel_id">
         <el-select placeholder="请选择频道" v-model="formData.channel_id">
           <el-option v-for="item of channels"
@@ -106,6 +106,20 @@ export default {
       } else if (this.formData.cover.type === 3) {
         this.formData.cover.images = ['', '', '']// 三图
       }
+    },
+    receiveImg (url, index) {
+      // 接收url 更改的是image数组
+      // console.log(url)this.formData.cover.images[index] = url
+      // 通过索引改数据无法实现响应式 会检测到新数组
+      // this.formData.cover.images = this.formData.cover.images.map((item, i) => {
+      //   if (index === i) {
+      //     // 找到了要更新的url
+      //     return url
+      //   } else { // 返回原数据
+      //     return item
+      //   }
+      // })
+      this.formData.cover.images = this.formData.cover.images.map((item, i) => index === i ? url : item)
     }
   },
   created () {

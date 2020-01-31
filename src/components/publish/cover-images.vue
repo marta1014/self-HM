@@ -1,6 +1,6 @@
 <template>
   <div class="coverImage">
-      <div class="item-image" @click="openDialog"
+      <div class="item-image" @click="openDialog(index)"
       v-for="(item,index) of list" :key="index" >
 <img :src="item ? item : defaultImg" alt="">
       </div>
@@ -8,7 +8,8 @@
       <el-dialog @close="visible = false"
       :visible="visible">
     <!-- 素材库组件 -->
-    <select-image></select-image>
+    <select-image @selectimg="receiveUrl"></select-image>
+    <!-- 监听触发的selectimg事件 获取到传递的数据 -->
       </el-dialog>
   </div>
 </template>
@@ -19,12 +20,21 @@ export default {
   data () {
     return {
       defaultImg: require('../../assets/img/pic_bg.png'),
-      visible: false
+      visible: false,
+      seleceIndex: -1// 用来 存储点击图片的下标
     }
   },
   methods: {
-    openDialog () {
+    openDialog (index) {
       this.visible = true
+      this.seleceIndex = index // 记录点击的图片下标
+    },
+    receiveUrl (url) { // 获取到传递的数据
+    // URL来源于list 而list来源于prop传递 而prop是只读 只能通知publish组件改
+    // 故继续子传父
+      // console.log(url, this.seleceIndex)
+      this.$emit('selectimg1', url, this.seleceIndex)
+      this.visible = false
     }
   }
 

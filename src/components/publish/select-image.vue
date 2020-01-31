@@ -3,7 +3,8 @@
       <el-tab-pane name="material" label="素材库">
           <div class="container-material">
               <el-card v-for="item of list" :key="item.id">
-                  <img :src="item.url" alt="">
+                  <img :src="item.url" @click="clickImg(item.url)"
+                  alt="">
               </el-card>
           </div>
           <el-row type="flex" justify="center">
@@ -49,12 +50,16 @@ export default {
         this.pagination.total = data.total_count
         this.pagination.currentPage = data.page
         this.pagination.pagesize = data.per_page
-        console.log(data)
+        // console.log(data)
       })
     },
     currentChange (newpage) {
       this.pagination.currentPage = newpage
       this.getMaterial()
+    },
+    clickImg (url) {
+      // 点击图片把URL传递给cover-iamge组件（父）子传父
+      this.$emit('selectimg', url)// $emit触发自定义事件
     }
   },
   created () {
