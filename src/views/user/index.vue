@@ -1,6 +1,5 @@
 <template>
- <el-card>
-
+ <el-card v-loading="loading">
          <breadCrumb slot="header">
          <template slot="title">账户信息</template>
          </breadCrumb>
@@ -23,7 +22,8 @@
                  <el-button type="primary" @click="saveUser">保存信息</el-button>
              </el-form-item>
          </el-form>
-         <el-upload action="" :show-file-list="false" class="upload">
+         <el-upload action="" :http-request="upload"
+         :show-file-list="false" class="upload">
              <img :src="formData.photo ? formData.photo : defaultImg" alt="">
          </el-upload>
  </el-card>
@@ -48,7 +48,8 @@ export default {
         email: [{ required: true, message: '邮箱必填' },
           { pattern: /^([0-9A-Za-z\-.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/g,
             message: '格式不正确' }]
-      }
+      },
+      loading: false
     }
   },
   methods: {
@@ -72,6 +73,20 @@ export default {
             message: '保存成功'
           })
         })
+      })
+    },
+    upload (params) {
+      this.loading = true
+      let data = new FormData()
+      data.append('photo', params.file)
+      this.$axios({
+        url: '/user/photo',
+        method: 'patch',
+        data
+      }).then(res => {
+        this.loading = false
+        const { data } = res.data
+        this.formData.photo = data.photo
       })
     }
   },
