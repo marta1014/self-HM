@@ -40,6 +40,10 @@ const routes = [
       {
         path: 'publish/:id', // 修改文章
         component: () => import('../views/publish')
+      },
+      {
+        path: '/user', // 修改文章
+        component: () => import('../views/user')
       }
     ]
   }

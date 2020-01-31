@@ -35,7 +35,7 @@ export default {
   methods: {
     clickmenu (command) { // 点击菜单项时触发的事件
       if (command === 'info') {
-
+        this.$router.push('/user')
       } else if (command === 'email') {
         window.location.href = 'https://baike.baidu.com/item/%E9%98%BF%E6%B6%B5/23563743?fr=aladdin'
       } else {
