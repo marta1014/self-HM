@@ -17,7 +17,11 @@
               </el-pagination>
           </el-row>
       </el-tab-pane>
-      <el-tab-pane name="update" label="上传">456</el-tab-pane>
+      <el-tab-pane name="update" label="上传">
+        <el-upload action="" :show-file-list="false" :http-request="uploadImg">
+          <i class="el-icon-plus"></i>
+        </el-upload>
+      </el-tab-pane>
   </el-tabs>
 </template>
 
@@ -60,6 +64,19 @@ export default {
     clickImg (url) {
       // 点击图片把URL传递给cover-iamge组件（父）子传父
       this.$emit('selectimg', url)// $emit触发自定义事件
+    },
+    uploadImg (params) {
+      let data = new FormData()
+      data.append('image', params.file)
+      this.$axios({
+        url: '/user/images',
+        method: 'post',
+        data
+      }).then(res => {
+        const { data } = res.data
+        console.log(res, data)
+        this.$emit('selectimg', data.url)
+      })
     }
   },
   created () {
@@ -84,6 +101,14 @@ export default {
                 height: 100%;
             }
         }
+    }
+    .el-upload{
+      i{
+        font-size: 50px;
+        padding: 50px;
+        border: 1px dashed #ccc;
+        border-radius: 6px;
+      }
     }
 }
 
