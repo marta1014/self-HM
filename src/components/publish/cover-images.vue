@@ -1,9 +1,14 @@
 <template>
   <div class="coverImage">
-      <div class="item-image" v-for="(item,index) of list" :key="index" >
+      <div class="item-image" @click="openDialog"
+      v-for="(item,index) of list" :key="index" >
 <img :src="item ? item : defaultImg" alt="">
       </div>
-
+      <!-- 弹层 -->
+      <el-dialog title="选择封面图片" @close="visible = false"
+      :visible="visible">
+    <!-- 素材库组件 -->
+      </el-dialog>
   </div>
 </template>
 
@@ -12,7 +17,13 @@ export default {
   props: ['list'],
   data () {
     return {
-      defaultImg: require('../../assets/img/pic_bg.png')
+      defaultImg: require('../../assets/img/pic_bg.png'),
+      visible: false
+    }
+  },
+  methods: {
+    openDialog () {
+      this.visible = true
     }
   }
 
