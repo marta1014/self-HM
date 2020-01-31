@@ -95,7 +95,7 @@ export default {
       }).then(res => {
         let { data } = res.data
         this.formData = data
-        console.log(data)
+        // console.log(data)
       })
     },
     changeType () {

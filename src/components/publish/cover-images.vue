@@ -5,9 +5,10 @@
 <img :src="item ? item : defaultImg" alt="">
       </div>
       <!-- 弹层 -->
-      <el-dialog title="选择封面图片" @close="visible = false"
+      <el-dialog @close="visible = false"
       :visible="visible">
     <!-- 素材库组件 -->
+    <select-image></select-image>
       </el-dialog>
   </div>
 </template>
