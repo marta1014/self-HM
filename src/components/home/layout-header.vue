@@ -46,13 +46,12 @@ export default {
         this.$router.push('/login')
       }
     },
-    getUserinfo () {
-      this.$axios({
+    async getUserinfo () {
+      let res = await this.$axios({
         url: '/user/profile'
-      }).then(res => {
-        const { data } = res.data
-        this.userinfo = data
       })
+      const { data } = res.data
+      this.userinfo = data
     },
     collapsed () {
       this.collapse = !this.collapse

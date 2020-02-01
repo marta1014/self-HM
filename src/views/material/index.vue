@@ -75,8 +75,8 @@ export default {
     }
   },
   methods: {
-    getMaterial () { // 获取素材
-      this.$axios({
+    async getMaterial () { // 获取素材
+      let res = await this.$axios({
         url: '/user/images',
         params: {
           collect: this.activeName === 'collect',
@@ -84,14 +84,13 @@ export default {
           page: this.pagination.currentPage,
           per_page: this.pagination.pagesize
         }
-      }).then(res => {
-        const { data } = res.data
-        this.list = data.results
-        this.pagination.total = data.total_count
-        this.pagination.currentPage = data.page
-        this.pagination.pagesize = data.per_page
-        // console.log(data)
       })
+      const { data } = res.data
+      this.list = data.results
+      this.pagination.total = data.total_count
+      this.pagination.currentPage = data.page
+      this.pagination.pagesize = data.per_page
+      // console.log(data)
     },
     changeTab () {
       // console.log(this.activeName)
@@ -102,45 +101,45 @@ export default {
       this.pagination.currentPage = newpage
       this.getMaterial()
     },
-    uploadImg (params) {
+    async uploadImg (params) {
       this.loading = true
       let data = new FormData()
       data.append('image', params.file)// 文件加入到参数中
-      this.$axios({
+      await this.$axios({
         method: 'post',
         url: '/user/images',
         data
-      }).then(res => {
-        console.log(res)
-        this.loading = false
-        this.pagination.currentPage = 1// 回第一页
-        this.getMaterial()
       })
+      // console.log(res)
+      this.loading = false
+      this.pagination.currentPage = 1// 回第一页
+      this.getMaterial()
     },
-    choice (item) { // 收藏
+    async choice (item) { // 收藏
       // item.is_collected ? '取消收藏' : '收藏'
-      this.$axios({
+      await this.$axios({
         method: 'put',
         url: `/user/images/${item.id}`,
         data: {
           collect: !item.is_collected// 取反 收藏就取消
         }
-      }).then(res => {
-        this.getMaterial()
       })
+      this.getMaterial()
     },
-    delItem (id) {
+    async delItem (id) {
       // 执行此方法时报错 request.js 在处理大数字时 那时data是空串
       // 处理空串报错 Cannot read property 'status' of undefined
       // 改造requst.js进行非空判断
-      this.$confirm('确定删除？').then(() => {
-        this.$axios({
-          method: 'delete',
-          url: `/user/images/${id}`
-        }).then(() => {
-          this.getMaterial()
-        })
+      await this.$confirm('确定删除？')
+      await this.$axios({
+        method: 'delete',
+        url: `/user/images/${id}`
       })
+      this.$message({
+        type: 'success',
+        message: '删除成功'
+      })
+      this.getMaterial()
     },
     preview (index) {
       this.visible = true

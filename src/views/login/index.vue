@@ -60,24 +60,22 @@ export default {
     }
   },
   methods: {
-    loginIn () {
+    async loginIn () {
       // 登陆触发手动校验
-      this.$refs.myLogin.validate(ok => {
+      await this.$refs.myLogin.validate(async ok => {
         // const user = this.loginForm
         if (ok) {
-          this.$axios({
+          let res = await this.$axios({
             url: 'authorizations',
             method: 'post',
             data: this.loginForm
           })
-            .then(res => {
-              // console.log(res.data.data.token)
-              const { data } = res.data // 解构赋值
-              // console.log(data)
-              localStorage.setItem('user-token', data.token) // 存至本地
-              this.$router.push('/home') // 编程式导航
-            })
-            // 根据状态码统一处理提示消息
+          // console.log(res.data.data.token)
+          const { data } = res.data // 解构赋值
+          // console.log(data)
+          localStorage.setItem('user-token', data.token) // 存至本地
+          this.$router.push('/home') // 编程式导航
+          // 根据状态码统一处理提示消息
         }
       })
     }

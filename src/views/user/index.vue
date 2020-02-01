@@ -54,43 +54,39 @@ export default {
     }
   },
   methods: {
-    getuser () {
-      this.$axios({
+    async getuser () {
+      let res = await this.$axios({
         url: '/user/profile'
-      }).then(res => {
-        const { data } = res.data
-        this.formData = data
       })
+      const { data } = res.data
+      this.formData = data
     },
-    saveUser () {
-      this.$refs.myform.validate().then(() => {
-        this.$axios({
-          url: '/user/profile',
-          method: 'patch',
-          data: this.formData
-        }).then(res => {
-          this.$message({
-            type: 'success',
-            message: '保存成功'
-          })
-          // 通知header组件信息需更改
-          eventBus.$emit('updateUserinfo')
-        })
+    async saveUser () {
+      this.$refs.myform.validate()
+      await this.$axios({
+        url: '/user/profile',
+        method: 'patch',
+        data: this.formData
       })
+      this.$message({
+        type: 'success',
+        message: '保存成功'
+      })
+      // 通知header组件信息需更改
+      eventBus.$emit('updateUserinfo')
     },
-    upload (params) {
+    async upload (params) {
       this.loading = true
-      let data = new FormData()
-      data.append('photo', params.file)
-      this.$axios({
+      let data1 = new FormData()
+      data1.append('photo', params.file)
+      let res = await this.$axios({
         url: '/user/photo',
         method: 'patch',
-        data
-      }).then(res => {
-        this.loading = false
-        const { data } = res.data
-        this.formData.photo = data.photo
+        data: data1
       })
+      this.loading = false
+      const { data } = res.data
+      this.formData.photo = data.photo
       // 通知header组件信息需更改
       eventBus.$emit('updateUserinfo')
     }

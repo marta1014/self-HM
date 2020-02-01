@@ -54,43 +54,43 @@ export default {
     }
   },
   methods: {
-    getComments () {
+    async  getComments () {
       // 获取评论
       this.loading = true
-      this.$axios({
+      let res = await this.$axios({
         url: '/articles',
         params: {
           response_type: 'comment',
           page: this.pagination.currentPage,
           per_page: this.pagination.pagesize
         }
-      }).then(res => { // 数据赋值
-        this.loading = false
-        const { data } = res.data
-        this.list = data.results
-        this.pagination.total = data.total_count
-        this.pagination.currentPage = data.page
-        this.pagination.pagesize = data.per_page
-      })
+      })// 数据赋值
+      this.loading = false
+      const { data } = res.data
+      this.list = data.results
+      this.pagination.total = data.total_count
+      this.pagination.currentPage = data.page
+      this.pagination.pagesize = data.per_page
     },
     fmBoolean (row, column, cellValue, index) { // 格式化布尔值方法
       // 当前行 当前列 当前单元格的值 索引
       return cellValue ? '正常' : '关闭'
     },
-    openAndClose (row) {
-      let mes = row.comment_status ? '关闭' : '打开'
-      this.$confirm(`你是否确定${mes}评论？`).then(() => {
-        // 调用接口更改状态
-        this.$axios({
+    async openAndClose (row) {
+      try {
+        let mes = row.comment_status ? '关闭' : '打开'
+        await this.$confirm(`你是否确定${mes}评论？`)
+        await this.$axios({// 调用接口更改状态
           method: 'put',
           url: 'comments/status',
           params: { article_id: row.id.toString() },
           // 经过JSON.bigint处理后是bignumber 转为字符串toString()
           data: { allow_comment: !row.comment_status }
-        }).then(() => { // 重新拉取数据
-          this.getComments()
-        }).catch(() => {})
-      })
+        }) // 重新拉取数据
+        this.getComments()
+      } catch (error) {
+
+      }
     },
     changeCurrent (newpage) { // 页码改变 新页即当前页
       this.pagination.currentPage = newpage

@@ -60,43 +60,40 @@ export default {
     }
   },
   methods: {
-    getChannels () {
-      this.$axios({
+    async getChannels () {
+      let res = await this.$axios({
         url: '/channels'
-      }).then(res => {
-        const { data } = res.data
-        this.channels = data.channels
       })
+      const { data } = res.data
+      this.channels = data.channels
     },
     publishArticle (Boolean) {
       // 触发手动校验规则 通过 => 请求
-      this.$refs.articleForm.validate(isOk => {
+      this.$refs.articleForm.validate(async isOk => {
         if (isOk) {
           // 判断发布/修改
           let { id } = this.$route.params
-          this.$axios({
+          await this.$axios({
             url: id ? `/articles/${id}` : '/articles',
             method: id ? 'put' : 'post',
             params: { draft: Boolean },
             data: this.formData
-          }).then(res => {
-            this.$message({
-              type: 'success',
-              message: '保存成功'
-            })
-            this.$router.push('/home/article')
           })
+          this.$message({
+            type: 'success',
+            message: '保存成功'
+          })
+          this.$router.push('/home/article')
         }
       })
     },
-    getArticleId (id) {
-      this.$axios({
+    async getArticleId (id) {
+      let res = await this.$axios({
         url: `/articles/${id}`
-      }).then(res => {
-        let { data } = res.data
-        this.formData = data
-        // console.log(data)
       })
+      let { data } = res.data
+      this.formData = data
+      // console.log(data)
     },
     changeType () {
       if (this.formData.cover.type === 0 || this.formData.cover.type === -1) {

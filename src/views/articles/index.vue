@@ -80,47 +80,43 @@ export default {
     }
   },
   methods: {
-    getChannels () {
-      this.$axios({
+    async getChannels () {
+      let res = await this.$axios({
         url: '/channels'
-      }).then(res => {
-        const { data } = res.data
-        this.channels = data.channels
-        // console.log(res, data)
       })
+      const { data } = res.data
+      this.channels = data.channels
+      // console.log(res, data)
     },
-    getArticles (params) {
+    async getArticles (params) {
       // 改造方法实现复用 第一次params没传 => undefined
-      this.$axios({
+      let res = await this.$axios({
         url: '/articles',
         params
-      }).then(res => {
-        const { data } = res.data
-        this.list = data.results
-        this.pagination.total = data.total_count
-        this.pagination.currentPage = data.page
-        this.pagination.pagesize = data.per_page
-        // console.log(data)
       })
+      const { data } = res.data
+      this.list = data.results
+      this.pagination.total = data.total_count
+      this.pagination.currentPage = data.page
+      this.pagination.pagesize = data.per_page
+      // console.log(data)
     },
     changeCondition () {
       this.pagination.currentPage = 1
       this.getCondition()
     },
-    delMaterial (id) {
+    async delMaterial (id) {
       // 接口设置只能删除草稿
-      this.$confirm('确认删除？').then(() => {
-        this.$axios({
-          method: 'delete',
-          url: `/articles/${id.toString()}`
-        }).then(res => {
-          this.$message({
-            type: 'success',
-            message: '删除成功'
-          })
-          this.getArticles()
-        })
+      await this.$confirm('确认删除？')
+      await this.$axios({
+        method: 'delete',
+        url: `/articles/${id.toString()}`
       })
+      this.$message({
+        type: 'success',
+        message: '删除成功'
+      })
+      this.getArticles()
     },
     changeCurrent (newpage) {
       this.pagination.currentPage = newpage

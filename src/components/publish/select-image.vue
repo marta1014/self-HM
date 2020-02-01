@@ -39,8 +39,8 @@ export default {
     }
   },
   methods: {
-    getMaterial () { // 获取素材
-      this.$axios({
+    async getMaterial () { // 获取素材
+      let res = await this.$axios({
         url: '/user/images',
         params: {
           collect: false,
@@ -48,14 +48,13 @@ export default {
           page: this.pagination.currentPage,
           per_page: this.pagination.pageSize
         }
-      }).then(res => {
-        const { data } = res.data
-        this.list = data.results
-        this.pagination.total = data.total_count
-        this.pagination.currentPage = data.page
-        this.pagination.pagesize = data.per_page
-        // console.log(data)
       })
+      const { data } = res.data
+      this.list = data.results
+      this.pagination.total = data.total_count
+      this.pagination.currentPage = data.page
+      this.pagination.pagesize = data.per_page
+      // console.log(data)
     },
     currentChange (newpage) {
       this.pagination.currentPage = newpage
@@ -65,18 +64,17 @@ export default {
       // 点击图片把URL传递给cover-iamge组件（父）子传父
       this.$emit('selectimg', url)// $emit触发自定义事件
     },
-    uploadImg (params) {
-      let data = new FormData()
-      data.append('image', params.file)
-      this.$axios({
+    async uploadImg (params) {
+      let data1 = new FormData()
+      data1.append('image', params.file)
+      let res = await this.$axios({
         url: '/user/images',
         method: 'post',
-        data
-      }).then(res => {
-        const { data } = res.data
-        console.log(res, data)
-        this.$emit('selectimg', data.url)
+        data: data1
       })
+      const { data } = res.data
+      console.log(res, data)
+      this.$emit('selectimg', data.url)
     }
   },
   created () {
