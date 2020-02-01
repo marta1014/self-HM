@@ -60,6 +60,7 @@
 </template>
 
 <script>
+import { getArticles, getChannels } from '../../aciton/articles'
 export default {
   name: 'articles',
   data () {
@@ -81,19 +82,14 @@ export default {
   },
   methods: {
     async getChannels () {
-      let res = await this.$axios({
-        url: '/channels'
-      })
+      let res = await getChannels()
       const { data } = res.data
       this.channels = data.channels
       // console.log(res, data)
     },
     async getArticles (params) {
       // 改造方法实现复用 第一次params没传 => undefined
-      let res = await this.$axios({
-        url: '/articles',
-        params
-      })
+      let res = await getArticles()
       const { data } = res.data
       this.list = data.results
       this.pagination.total = data.total_count

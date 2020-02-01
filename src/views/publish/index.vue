@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import { getChannels } from '../../aciton/articles'
 export default {
   name: 'publish',
   data () {
@@ -61,9 +62,7 @@ export default {
   },
   methods: {
     async getChannels () {
-      let res = await this.$axios({
-        url: '/channels'
-      })
+      let res = await getChannels()
       const { data } = res.data
       this.channels = data.channels
     },
