@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import eventBus from '../../utils/eventBus'
 export default {
   name: 'layoutHeader',
   data () {
@@ -42,14 +43,21 @@ export default {
         localStorage.removeItem('user-token')
         this.$router.push('/login')
       }
+    },
+    getUserinfo () {
+      this.$axios({
+        url: '/user/profile'
+      }).then(res => {
+        const { data } = res.data
+        this.userinfo = data
+      })
     }
   },
   created () {
-    this.$axios({
-      url: '/user/profile'
-    }).then(res => {
-      const { data } = res.data
-      this.userinfo = data
+    this.getUserinfo()
+    // 开启监听
+    eventBus.$on('updateUserinfo', () => {
+      this.getUserinfo()
     })
   }
 }
