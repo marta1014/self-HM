@@ -50,6 +50,9 @@ const routes = [
         component: () => import('../views/graphic')
       }
     ]
+  },
+  { path: '*', // 无匹配
+    component: () => import('../views/404')
   }
 ]
 
