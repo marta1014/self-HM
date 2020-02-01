@@ -2,7 +2,8 @@
   <div class="layout-header">
       <el-row type="flex" class="header" align="middle">
           <el-col :span="18" class="left">
-            <i class="el-icon-s-fold"></i>
+            <i :class="{'el-icon-s-unfold':collapse,'el-icon-s-fold':!collapse}"
+            @click="collapsed"></i>
             <span>这是一首简单的小情歌</span>
           </el-col>
           <el-col :span="6" class="right">
@@ -30,7 +31,8 @@ export default {
   data () {
     return {
       userinfo: {},
-      defaultPhoto: require('../../assets/img/avatar.jpg')// 引用图片地址给该变量
+      defaultPhoto: require('../../assets/img/avatar.jpg'), // 引用图片地址给该变量
+      collapse: false
     }
   },
   methods: {
@@ -51,6 +53,10 @@ export default {
         const { data } = res.data
         this.userinfo = data
       })
+    },
+    collapsed () {
+      this.collapse = !this.collapse
+      eventBus.$emit('changeCallapse')
     }
   },
   created () {
