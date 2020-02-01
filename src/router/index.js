@@ -44,6 +44,10 @@ const routes = [
       {
         path: '/user', // 修改文章
         component: () => import('../views/user')
+      },
+      {
+        path: 'graphic',
+        component: () => import('../views/graphic')
       }
     ]
   }
