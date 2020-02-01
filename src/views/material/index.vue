@@ -15,7 +15,7 @@
         <el-tab-pane label="全部" name="all">
         <div class="item">
         <el-card v-for="(item,index) of list" :key="index">
-        <img :src="item.url" alt="">
+        <img :src="item.url" alt="" @click="preview(index)">
         <el-row class="oprate">
 <!-- 是否被收藏 接口要求is_collected = true/false 收藏/否-->
             <i class="el-icon-star-on"
@@ -29,7 +29,7 @@
         <el-tab-pane label="收藏" name="collect">
         <div class="item">
         <el-card v-for="(item,index) of list" :key="index">
-        <img :src="item.url" alt="">
+        <img :src="item.url" alt=""  @click="preview(index)">
     </el-card>
     </div>
         </el-tab-pane>
@@ -47,6 +47,14 @@
       >
     </el-pagination>
     </el-row>
+    <el-dialog :visible="visible" @opened="openEnd"
+    @close="visible = false">
+        <el-carousel ref="myCarousel" indicator-position="outside" height="500px">
+    <el-carousel-item v-for="(item,index) in list" :key="index">
+      <img :src="item.url" alt="" style="height:100%,width:100%">
+    </el-carousel-item>
+  </el-carousel>
+    </el-dialog>
 </el-card>
 </template>
 
@@ -61,7 +69,9 @@ export default {
         currentPage: 1,
         pagesize: 8
       },
-      loading: false
+      loading: false,
+      visible: false,
+      indexImg: -1// 保存点击图片索引
     }
   },
   methods: {
@@ -131,6 +141,15 @@ export default {
           this.getMaterial()
         })
       })
+    },
+    preview (index) {
+      this.visible = true
+      // dialog是懒加载 没第一次弹出之前 没有元素内容
+      // 需通过监听它的事件来进行系列操作
+      this.indexImg = index
+    },
+    openEnd () { // 监听渲染完成事件 => 获取实例 => 调用方法
+      this.$refs.myCarousel.setActiveItem(this.indexImg)
     }
   },
   created () {
